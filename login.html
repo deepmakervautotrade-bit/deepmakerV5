@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login · Deepmaker V5.5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #0f1a2f 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-card {
+            background: rgba(30, 42, 71, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #2962ff, #0d47a1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .logo-text h1 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo-text .version {
+            color: #00d4ff;
+            font-size: 0.8rem;
+        }
+        
+        .sub {
+            color: #8a9db0;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a0b8cc;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        input {
+            width: 100%;
+            padding: 16px 20px;
+            background: #0a0f1e;
+            border: 1px solid #2a3a5a;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 3px rgba(0,212,255,0.2);
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, #00d4ff, #0099ff);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,212,255,0.3);
+        }
+        
+        .info {
+            margin-top: 25px;
+            padding: 15px;
+            background: #0a0f1e;
+            border-radius: 10px;
+            border-left: 4px solid #00d4ff;
+        }
+        
+        .info p {
+            color: #8a9db0;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .info a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #4a5a6a;
+            font-size: 0.8rem;
+        }
+        
+        .error {
+            color: #ff4d4d;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="logo-text">
+                <h1>Deepmaker <span class="version">V5.5</span></h1>
+            </div>
+        </div>
+        
+        <p class="sub">Masukkan kode lisensi Anda untuk mengakses dashboard trading dan remote control EA.</p>
+        
+        <div class="input-group">
+            <label>🔑 Kode Lisensi</label>
+            <input type="text" id="licenseCode" placeholder="Contoh: PYY9ABYR8HVWDFD3" autocomplete="off" autofocus>
+        </div>
+        
+        <button onclick="accessDashboard()">
+            <i class="fas fa-arrow-right" style="margin-right: 10px;"></i> AKSES DASHBOARD
+        </button>
+        
+        <div id="errorMessage" class="error"></div>
+        
+        <div class="info">
+            <p><i class="fas fa-info-circle" style="color:#00d4ff;"></i> Belum punya lisensi?</p>
+            <p>• Trial 2 hari: <a href="#">Isi form di sini</a></p>
+            <p>• Pembelian: Hubungi <a href="#">sales@deepmakerv5.com</a></p>
+        </div>
+        
+        <div class="footer">
+            © 2026 Deepmaker V5.5 Autotrade. All rights reserved.
+        </div>
+    </div>
+
+    <script>
+        // 🔥 GANTI DENGAN URL GAS ANDA (PROYEK UTAMA)
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzAsdLKogUOXEoFogIfn3JPisuf3aXuwrmU3nc8sOPXMwVMGjVoOYstiCsUhezj5cc3HQ/exec';
+        
+        function accessDashboard() {
+            const license = document.getElementById('licenseCode').value.trim().toUpperCase();
+            const errorEl = document.getElementById('errorMessage');
+            
+            if (!license) {
+                errorEl.style.display = 'block';
+                errorEl.innerText = '❌ Masukkan kode lisensi Anda!';
+                return;
+            }
+            
+            if (license.length < 10) {
+                errorEl.style.display = 'block';
+                errorEl.innerText = '❌ Kode lisensi tidak valid!';
+                return;
+            }
+            
+            // Redirect ke dashboard 
+            window.location.href = `${GAS_URL}?page=dashboard&license=${license}`;
+        }
+        
+        // Enter key
+        document.getElementById('licenseCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                accessDashboard();
+            }
+        });
+    </script>
+</body>
+</html>
