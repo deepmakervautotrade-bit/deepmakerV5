@@ -36,11 +36,16 @@
         if (!license) {
             document.getElementById('dashboard-container').innerHTML = '<div class="error">Kode lisensi tidak ditemukan. Silakan login kembali.</div>';
         } else {
-            // 🔥 GANTI DENGAN URL GAS ANDA YANG SEBENARNYA
-            const GAS_URL = 'https://script.google.com/macros/s/AKfycbzAsdLKogUOXEoFogIfn3JPisuf3aXuwrmU3nc8sOPXMwVMGjVoOYstiCsUhezj5cc3HQ/exec';
-            const targetUrl = `${GAS_URL}?page=dashboard&license=${encodeURIComponent(license)}`;
 
-            fetch(targetUrl)
+fetch(`/dashboard?license=${encodeURIComponent(license)}`)
+  .then(response => response.text())
+  .then(html => {
+    document.getElementById('dashboard-container').innerHTML = html;
+  })
+  .catch(error => {
+    document.getElementById('dashboard-container').innerHTML = `<div class="error">Gagal memuat dashboard: ${error.message}</div>`;
+  });
+            
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById('dashboard-container').innerHTML = html;
