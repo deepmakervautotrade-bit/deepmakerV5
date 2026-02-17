@@ -190,8 +190,7 @@
     </div>
 
     <script>
-        // 🔥 GANTI DENGAN URL GAS ANDA (PROYEK UTAMA)
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyPxH2Lf3UwTbkD7W6Pzou5Y_UgQTi0b4hn47_RwBi4xPQlROjn8JjOq0JQOaFA_mGJuQ/exec';
+        
         
         function accessDashboard() {
             const license = document.getElementById('licenseCode').value.trim().toUpperCase();
@@ -210,7 +209,7 @@
             }
             
             // Redirect ke dashboard 
-            window.location.href = `${GAS_URL}?page=dashboard&license=${license}`;
+            window.location.href = `https://deepmakerv5.pages.dev/dash/${license}`;
         }
         
         // Enter key
