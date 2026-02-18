@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== CSS DARI showDashboard ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
@@ -145,37 +144,46 @@
     </div>
 
     <script>
-        // Ganti dengan URL Web App GAS Anda
-        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzIg-Owtk18ZMnxQ3bfB9T3JQk6X0sBfcIfiJMRfyUDT96-OD7qJlwJBdleNV-yjPKqcg/exec';
+        // ========== KONFIGURASI ==========
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzIg-Owtk18ZMnxQ3bfB9T3JQk6X0sBfcIfiJMRfyUDT96-OD7qJlwJBdleNV-yjPKqcg/exec'; // GANTI DENGAN URL WEB APP ANDA
 
         // Ambil parameter license dari URL
         const urlParams = new URLSearchParams(window.location.search);
-        const licenseCode = urlParams.get('license');
+        const licenseCode = urlParams.get('license') || (window.location.pathname.startsWith('/dash/') ? window.location.pathname.replace('/dash/', '') : null);
 
         if (!licenseCode) {
-            document.getElementById('app').innerHTML = '<div class="error">Kode lisensi tidak ditemukan</div>';
+            document.getElementById('app').innerHTML = '<div class="error" style="color:red; text-align:center;">Kode lisensi tidak ditemukan</div>';
         } else {
             // Panggil API untuk mendapatkan data portfolio
-            fetch(`${GAS_API_URL}?action=getPortfolio&license=${licenseCode}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        renderDashboard(data);
-                    } else {
-                        document.getElementById('app').innerHTML = `<div class="error">Error: ${data.error}</div>`;
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('app').innerHTML = `<div class="error">Gagal memuat data: ${error.message}</div>`;
-                });
+            fetch(`${GAS_API_URL}?action=getPortfolio&license=${encodeURIComponent(licenseCode)}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' } // Hindari preflight request
+            })
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                console.log('✅ Data dari API:', data);
+                if (data && data.success) {
+                    renderDashboard(data);
+                } else {
+                    throw new Error(data?.error || 'Data tidak valid dari server');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Fetch error:', error);
+                document.getElementById('app').innerHTML = `<div class="error" style="color:red; text-align:center;">Gagal memuat data: ${error.message}</div>`;
+            });
         }
 
+        // ========== FUNGSI RENDER DASHBOARD ==========
         function renderDashboard(portfolio) {
             const user = portfolio.user;
             const accounts = portfolio.accounts;
             const summary = portfolio.summary;
 
-            // Bangun HTML untuk akun-akun
+            // Bangun HTML untuk setiap akun
             let accountsHtml = '';
             accounts.forEach(acc => {
                 const pnl = (acc.equity - acc.balance).toFixed(2);
@@ -281,13 +289,7 @@
                     <h2 style="margin: 32px 0 16px; font-weight:600; display:flex; align-items:center; gap:8px;">
                         <i class="fas fa-exchange-alt" style="color:#2563eb;"></i> Connected MT5 Accounts
                     </h2>
-                    ${accountsHtml || `
-                        <div class="empty-state">
-                            <i class="fas fa-plug"></i>
-                            <h3>No MT5 Account Connected</h3>
-                            <p>Attach EA to your MT5 chart to see account details.</p>
-                        </div>
-                    `}
+                    ${accountsHtml || '<div class="empty-state"><i class="fas fa-plug"></i><h3>No MT5 Account Connected</h3><p>Attach EA to your MT5 chart to see account details.</p></div>'}
 
                     <div class="footer">
                         <i class="fas fa-robot"></i> DeepmakerV5.5 · Enterprise License System · © 2026
@@ -298,29 +300,36 @@
             document.getElementById('app').innerHTML = html;
         }
 
-        // Fungsi toggleEA
+        // ========== FUNGSI TOGGLE EA POWER ==========
         window.toggleEA = function(deviceId, isOn, event) {
             const status = isOn ? 'ON' : 'OFF';
-            fetch(`${GAS_API_URL}?action=toggle&license=${licenseCode}&device_id=${deviceId}&status=${status}`)
-                 method: 'GET', // Ubah menjadi GET, karena kita tidak mengirim body
-                  headers: {
-                'Content-Type': 'text/plain;charset=utf-8' // 👈 Ubah header untuk hindari preflight
-                  }
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        const cb = event.target;
-                        cb.checked = isOn;
-                        const statusSpan = cb.closest('.toggle-container').querySelector('.power-status');
-                        if (statusSpan) {
-                            statusSpan.innerText = status;
-                            statusSpan.className = 'power-status ' + (status === 'ON' ? 'on' : 'off');
-                        }
-                    } else {
-                        alert('Gagal: ' + (result.error || 'Unknown error'));
+            fetch(`${GAS_API_URL}?action=toggle&license=${licenseCode}&device_id=${encodeURIComponent(deviceId)}&status=${status}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                return response.json();
+            })
+            .then(result => {
+                console.log('✅ Toggle result:', result);
+                if (result.success) {
+                    // Update tampilan
+                    const cb = event.target;
+                    cb.checked = isOn;
+                    const statusSpan = cb.closest('.toggle-container').querySelector('.power-status');
+                    if (statusSpan) {
+                        statusSpan.innerText = status;
+                        statusSpan.className = 'power-status ' + (status === 'ON' ? 'on' : 'off');
                     }
-                })
-                .catch(err => alert('Error: ' + err.message));
+                } else {
+                    alert('Gagal: ' + (result.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('❌ Toggle error:', error);
+                alert('Error: ' + error.message);
+            });
         };
     </script>
 </body>
