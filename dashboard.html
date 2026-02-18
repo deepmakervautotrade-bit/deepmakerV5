@@ -302,6 +302,10 @@
         window.toggleEA = function(deviceId, isOn, event) {
             const status = isOn ? 'ON' : 'OFF';
             fetch(`${GAS_API_URL}?action=toggle&license=${licenseCode}&device_id=${deviceId}&status=${status}`)
+                 method: 'GET', // Ubah menjadi GET, karena kita tidak mengirim body
+                  headers: {
+                'Content-Type': 'text/plain;charset=utf-8' // 👈 Ubah header untuk hindari preflight
+                  }
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
