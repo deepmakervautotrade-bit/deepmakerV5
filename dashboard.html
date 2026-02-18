@@ -153,11 +153,7 @@
 
         if (!licenseCode) {
             document.getElementById('app').innerHTML = '<div class="error" style="color:red; text-align:center;">Kode lisensi tidak ditemukan</div>';
-            throw new Error('License code missing');
-}
-console.log('License code:', licenseCode); // untuk debug
-        
-        } else {
+          }else {
             // Panggil API untuk mendapatkan data portfolio
             fetch(`${GAS_API_URL}?action=getPortfolio&license=${encodeURIComponent(licenseCode)}`, {
                 method: 'GET',
