@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran Gagal · Deepmaker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #0f1a2f 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .card {
+            background: rgba(30, 42, 71, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            color: white;
+        }
+        .icon {
+            width: 80px;
+            height: 80px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: white;
+        }
+        h1 {
+            margin-bottom: 16px;
+            color: #ef4444;
+        }
+        p {
+            color: #a0b8cc;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(90deg, #ef4444, #b91c1c);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin: 0 5px;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(239,68,68,0.3);
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: #4a5a6a;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon">✗</div>
+        <h1>Pembayaran Gagal</h1>
+        <p>Maaf, terjadi kendala saat memproses pembayaran Anda. Silakan coba lagi atau hubungi dukungan jika masalah berlanjut.</p>
+        <a href="https://deepmakerv5.pages.dev/register.html" class="button">Coba Lagi</a>
+        <a href="https://tawk.to/chat/6986e98076ad761c40db5824/1jgrg082c" class="button">Hubungi Support</a>
+        <div class="footer">
+            © 2026 Deepmaker V5.5 Autotrade
+        </div>
+    </div>
+    <script>
+        // Opsional: tampilkan order_id dari URL jika ada
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('order_id');
+        if (orderId) {
+            // bisa ditambahkan di dalam p jika ingin
+        }
+    </script>
+</body>
+</html>
