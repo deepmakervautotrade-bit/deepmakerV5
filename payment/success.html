@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pembayaran Berhasil - Deepmaker V5.5</title>
+    <title>Status Pembayaran - Deepmaker V5.5</title>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -24,16 +24,19 @@
             padding: 40px;
             max-width: 500px;
             text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
         .icon {
             font-size: 64px;
-            color: #10b981;
             margin-bottom: 20px;
         }
         h1 {
-            color: #10b981;
             margin-bottom: 20px;
         }
+        .icon.success { color: #10b981; }
+        .icon.pending { color: #f59e0b; }
+        .icon.error { color: #ef4444; }
+        .icon.loading { color: #3b82f6; }
         p {
             color: #a0b8cc;
             margin-bottom: 30px;
@@ -53,14 +56,117 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(0,212,255,0.3);
         }
+        .btn.secondary {
+            background: transparent;
+            border: 1px solid #00d4ff;
+        }
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-left-color: #00d4ff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="icon">✅</div>
-        <h1>Pembayaran Berhasil!</h1>
-        <p>Terima kasih telah melakukan pembayaran. Lisensi Anda telah aktif dan dapat segera digunakan. Silakan login ke dashboard untuk melihat detail akun dan mengelola EA Anda.</p>
-        <a href="https://deepmakerv5.pages.dev/login.html" class="btn">Login ke Dashboard</a>
+    <div class="card" id="statusCard">
+        <!-- Tampilan loading (default) -->
+        <div id="loadingView">
+            <div class="spinner"></div>
+            <h1 style="color:#3b82f6;">Memverifikasi Pembayaran</h1>
+            <p>Mohon tunggu, kami sedang memeriksa status transaksi Anda...</p>
+        </div>
+
+        <!-- Tampilan sukses (akan muncul setelah verifikasi) -->
+        <div id="successView" class="hidden">
+            <div class="icon success">✅</div>
+            <h1 style="color:#10b981;">Pembayaran Berhasil!</h1>
+            <p>Terima kasih telah melakukan pembayaran. Lisensi Anda telah aktif dan dapat segera digunakan. Silakan login ke dashboard untuk melihat detail akun dan mengelola EA Anda.</p>
+            <a href="https://deepmakerv5.pages.dev/login.html" class="btn">Login ke Dashboard</a>
+        </div>
+
+        <!-- Tampilan pending -->
+        <div id="pendingView" class="hidden">
+            <div class="icon pending">⏳</div>
+            <h1 style="color:#f59e0b;">Pembayaran Sedang Diproses</h1>
+            <p>Status pembayaran Anda masih <strong>pending</strong>. Kami akan mengirimkan email begitu pembayaran terkonfirmasi. Anda juga bisa cek kembali halaman ini nanti.</p>
+            <a href="https://deepmakerv5.pages.dev" class="btn secondary">Kembali ke Beranda</a>
+        </div>
+
+        <!-- Tampilan gagal / error -->
+        <div id="errorView" class="hidden">
+            <div class="icon error">❌</div>
+            <h1 style="color:#ef4444;">Transaksi Tidak Ditemukan</h1>
+            <p id="errorMessage">Kami tidak dapat menemukan data transaksi Anda. Silakan hubungi dukungan jika masalah berlanjut.</p>
+            <a href="https://tawk.to/chat/6986e98076ad761c40db5824/1jgrg082c" class="btn secondary" target="_blank">Hubungi Dukungan</a>
+        </div>
     </div>
+
+    <script>
+        // ========== KONFIGURASI ==========
+        // GANTI DENGAN URL DEPLOYMENT Google Apps Script ANDA
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyzVyT-ipkq5tCSeiT2GvkniFmjADhDsJIJTGTtDYuLPPzOPgRD_Aq6ZIv203fQyEqRoQ/exec'; 
+
+        // Ambil parameter order_id dari URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('order_id');
+
+        // Referensi elemen
+        const loadingView = document.getElementById('loadingView');
+        const successView = document.getElementById('successView');
+        const pendingView = document.getElementById('pendingView');
+        const errorView = document.getElementById('errorView');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Jika tidak ada order_id, langsung tampilkan error
+        if (!orderId) {
+            loadingView.classList.add('hidden');
+            errorView.classList.remove('hidden');
+            errorMessage.innerText = 'Parameter order_id tidak ditemukan di URL.';
+        } else {
+            // Panggil API untuk cek status
+            fetch(`${GAS_API_URL}?action=checkStatus&order_id=${encodeURIComponent(orderId)}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Gagal menghubungi server');
+                    return response.json();
+                })
+                .then(data => {
+                    loadingView.classList.add('hidden');
+
+                    if (data.success && data.status) {
+                        switch (data.status) {
+                            case 'settlement':
+                            case 'capture':
+                                successView.classList.remove('hidden');
+                                break;
+                            case 'pending':
+                                pendingView.classList.remove('hidden');
+                                break;
+                            default:
+                                // status lain: expire, cancel, deny, dll
+                                errorView.classList.remove('hidden');
+                                errorMessage.innerText = `Status transaksi: ${data.status}. Jika Anda sudah melakukan pembayaran, hubungi dukungan.`;
+                        }
+                    } else {
+                        errorView.classList.remove('hidden');
+                        errorMessage.innerText = data.error || 'Data transaksi tidak ditemukan.';
+                    }
+                })
+                .catch(error => {
+                    loadingView.classList.add('hidden');
+                    errorView.classList.remove('hidden');
+                    errorMessage.innerText = 'Terjadi kesalahan: ' + error.message;
+                });
+        }
+    </script>
 </body>
 </html>
