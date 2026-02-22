@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* === KODE CSS LENGKAP (sama seperti sebelumnya, tidak ada perubahan) === */
+        /* === KODE CSS LENGKAP (sama seperti sebelumnya, hanya tambahan kecil di bagian notifikasi) === */
         * {
             margin: 0;
             padding: 0;
@@ -728,11 +728,12 @@
             color: #10b981;
             font-weight: 500;
         }
-        /* Notifikasi Popup */
+        /* Notifikasi Popup - Dipindah ke kiri */
         .notification-container {
             position: fixed;
             bottom: 20px;
-            right: 20px;
+            left: 20px;  /* pindah ke kiri */
+            right: auto;  /* agar tidak bentrok dengan live chat di kanan */
             z-index: 9999;
             display: flex;
             flex-direction: column;
@@ -748,13 +749,31 @@
             display: flex;
             align-items: flex-start;
             gap: 0.5rem;
-            animation: slideIn 0.3s ease;
+            animation: slideInLeft 0.3s ease;
             position: relative;
         }
         body.dark-theme .notification-toast {
             background: #1e293b;
             border-left-color: #fbbf24;
             color: #e2e8f0;
+        }
+        /* Variasi warna border berdasarkan paket */
+        .notification-toast.package-trial {
+            border-left-color: #10b981; /* hijau */
+        }
+        .notification-toast.package-basic {
+            border-left-color: #3b82f6; /* biru */
+        }
+        .notification-toast.package-pro {
+            border-left-color: #8b5cf6; /* ungu */
+        }
+        .notification-toast.package-vip {
+            border-left-color: #f59e0b; /* oranye */
+        }
+        .notification-toast .notif-icon {
+            font-size: 1.2rem;
+            min-width: 24px;
+            text-align: center;
         }
         .notification-toast .notif-content {
             flex: 1;
@@ -781,8 +800,8 @@
         .notification-toast .close-notif:hover {
             color: #ef4444;
         }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
         /* CTA */
@@ -1395,7 +1414,7 @@
         </div>
     </footer>
 
-    <!-- Container Notifikasi -->
+    <!-- Container Notifikasi (di kiri bawah) -->
     <div class="notification-container" id="notificationContainer"></div>
 
     <!-- Live Chat Tawk.to -->
@@ -1542,28 +1561,44 @@
             }, 2000);
         });
 
-        // Notifikasi pembelian popup
+        // Notifikasi pembelian popup (di kiri, dengan variasi nama & negara)
         const notifContainer = document.getElementById('notificationContainer');
         const notifications = [
-            { name: 'Andi', city: 'Jakarta', package: 'Paket Pro' },
-            { name: 'Budi', city: 'Surabaya', package: 'Paket VIP' },
-            { name: 'Citra', city: 'Bandung', package: 'Paket Basic' },
-            { name: 'David', city: 'Medan', package: 'Paket Trial' },
-            { name: 'Eka', city: 'Makassar', package: 'Paket Pro' }
+            // Indonesia
+            { name: 'Andi', city: 'Jakarta', country: 'Indonesia', package: 'Pro', icon: '🚀' },
+            { name: 'Budi', city: 'Surabaya', country: 'Indonesia', package: 'VIP', icon: '👑' },
+            { name: 'Citra', city: 'Bandung', country: 'Indonesia', package: 'Basic', icon: '📦' },
+            { name: 'Dewi', city: 'Medan', country: 'Indonesia', package: 'Trial', icon: '🔍' },
+            { name: 'Eko', city: 'Semarang', country: 'Indonesia', package: 'Pro', icon: '🚀' },
+            { name: 'Fitri', city: 'Makassar', country: 'Indonesia', package: 'VIP', icon: '👑' },
+            // Vietnam
+            { name: 'Nguyen Van A', city: 'Ho Chi Minh', country: 'Vietnam', package: 'Pro', icon: '🚀' },
+            { name: 'Tran Thi B', city: 'Hanoi', country: 'Vietnam', package: 'Basic', icon: '📦' },
+            { name: 'Le Van C', city: 'Da Nang', country: 'Vietnam', package: 'VIP', icon: '👑' },
+            { name: 'Pham Thi D', city: 'Hai Phong', country: 'Vietnam', package: 'Trial', icon: '🔍' },
+            { name: 'Hoang Van E', city: 'Can Tho', country: 'Vietnam', package: 'Pro', icon: '🚀' },
+            // Singapore
+            { name: 'Tan Wei Ming', city: 'Singapore', country: 'Singapore', package: 'VIP', icon: '👑' },
+            { name: 'Lim Siew Hoon', city: 'Singapore', country: 'Singapore', package: 'Pro', icon: '🚀' },
+            { name: 'Goh Keng Swee', city: 'Singapore', country: 'Singapore', package: 'Basic', icon: '📦' },
+            { name: 'Lee Hsien Yang', city: 'Singapore', country: 'Singapore', package: 'Trial', icon: '🔍' },
+            { name: 'Wong Chen Wei', city: 'Singapore', country: 'Singapore', package: 'VIP', icon: '👑' },
+            { name: 'Neo Ai Ling', city: 'Singapore', country: 'Singapore', package: 'Pro', icon: '🚀' },
         ];
 
         let notifIndex = 0;
 
         function showNextNotification() {
-            if (notifIndex >= notifications.length) return;
+            const notif = notifications[notifIndex % notifications.length];
+            notifIndex++;
 
-            const notif = notifications[notifIndex];
             const toast = document.createElement('div');
-            toast.className = 'notification-toast';
+            toast.className = `notification-toast package-${notif.package.toLowerCase()}`;
             toast.innerHTML = `
+                <span class="notif-icon">${notif.icon}</span>
                 <div class="notif-content">
-                    <strong>${notif.name} dari ${notif.city}</strong>
-                    <p>telah membeli ${notif.package}</p>
+                    <strong>${notif.name} (${notif.city}, ${notif.country})</strong>
+                    <p>telah membeli Paket ${notif.package}</p>
                 </div>
                 <button class="close-notif">&times;</button>
             `;
@@ -1579,15 +1614,13 @@
             setTimeout(() => {
                 if (toast.parentNode) toast.remove();
             }, 5000);
-
-            notifIndex++;
         }
 
         // Tampilkan notifikasi pertama segera setelah halaman dimuat
         window.addEventListener('load', function() {
             showNextNotification();
-            // Tampilkan notifikasi berikutnya setiap 3 detik
-            setInterval(showNextNotification, 3000);
+            // Tampilkan notifikasi berikutnya setiap 4 detik
+            setInterval(showNextNotification, 4000);
         });
     </script>
 </body>
