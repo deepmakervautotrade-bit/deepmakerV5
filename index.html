@@ -522,24 +522,70 @@
             background: #fbbf24;
             color: #0f172a;
         }
-        /* Testimonials */
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+        /* Testimonials Slider */
+        .testimonials-slider-container {
+            position: relative;
+            margin-top: 2rem;
+            padding: 0 20px;
         }
-        .testimonial-card {
+        .testimonials-slider {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            padding-bottom: 1rem;
+        }
+        .testimonials-slider::-webkit-scrollbar {
+            height: 6px;
+        }
+        .testimonials-slider::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        body.dark-theme .testimonials-slider::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        .testimonials-slider .testimonial-card {
+            flex: 0 0 300px;
             background: white;
             border: 1px solid #e2e8f0;
             border-radius: 20px;
             padding: 2rem;
             transition: all 0.2s;
         }
-        body.dark-theme .testimonial-card {
+        body.dark-theme .testimonials-slider .testimonial-card {
             background: #1e293b;
             border-color: #334155;
         }
+        .slider-prev, .slider-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slider-prev { left: -10px; }
+        .slider-next { right: -10px; }
+        body.dark-theme .slider-prev, body.dark-theme .slider-next {
+            background: #1e293b;
+            border-color: #334155;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .slider-prev, .slider-next { display: none; }
+        }
+        /* Testimonial card inner */
         .testimonial-header {
             display: flex;
             align-items: center;
@@ -578,6 +624,165 @@
         }
         body.dark-theme .testimonial-text {
             color: #cbd5e1;
+        }
+        /* Form Ulasan */
+        .review-form-container {
+            max-width: 600px;
+            margin: 3rem auto 0;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        body.dark-theme .review-form-container {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        .review-form-title {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        .rating-input {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: #cbd5e1;
+            cursor: pointer;
+        }
+        .rating-input i {
+            transition: color 0.2s;
+        }
+        .rating-input i.active {
+            color: #fbbf24;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            color: #1e293b;
+        }
+        body.dark-theme .form-group input, body.dark-theme .form-group textarea {
+            background: #0f172a;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 0.8rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .btn-submit:hover {
+            background: #1e40af;
+        }
+        .btn-submit.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .btn-submit .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .btn-submit.loading .spinner {
+            display: inline-block;
+        }
+        .btn-submit.loading span {
+            visibility: hidden;
+        }
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        .submit-message {
+            text-align: center;
+            margin-top: 1rem;
+            color: #10b981;
+            font-weight: 500;
+        }
+        /* Notifikasi Popup */
+        .notification-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 300px;
+        }
+        .notification-toast {
+            background: white;
+            border-left: 4px solid #2563eb;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            animation: slideIn 0.3s ease;
+            position: relative;
+        }
+        body.dark-theme .notification-toast {
+            background: #1e293b;
+            border-left-color: #fbbf24;
+            color: #e2e8f0;
+        }
+        .notification-toast .notif-content {
+            flex: 1;
+        }
+        .notification-toast .notif-content strong {
+            display: block;
+            font-size: 0.9rem;
+        }
+        .notification-toast .notif-content p {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        body.dark-theme .notification-toast .notif-content p {
+            color: #9ca3af;
+        }
+        .notification-toast .close-notif {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #94a3b8;
+            padding: 0 4px;
+        }
+        .notification-toast .close-notif:hover {
+            color: #ef4444;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         /* CTA */
         .cta-section {
@@ -933,79 +1138,209 @@
         </div>
     </section>
 
-    <!-- Testimonials Section -->
-    <section class="section">
+    <!-- Testimonials Section with Slider and Review Form -->
+    <section class="section" id="testimonials">
         <div class="container">
             <div class="section-header">
                 <div class="section-subtitle">TESTIMONI</div>
                 <h2 class="section-title">Apa Kata Mereka?</h2>
                 <p class="section-desc">Pengalaman nyata dari para trader yang sudah menggunakan Deepmaker V5.5.</p>
             </div>
-            <div class="testimonials-grid">
-                <!-- Testimoni 1 (Indonesia) -->
-                <div class="testimonial-card">
-                    <div class="testimonial-header">
-                        <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
-                        <div class="testimonial-name">
-                            <h4>Budi Santoso</h4>
-                            <p>Jakarta, Indonesia</p>
+
+            <!-- Slider Testimoni -->
+            <div class="testimonials-slider-container">
+                <div class="testimonials-slider" id="testimonialsSlider">
+                    <!-- Testimoni 1 (Indonesia) -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div class="testimonial-name">
+                                <h4>Budi Santoso</h4>
+                                <p>Jakarta, Indonesia</p>
+                            </div>
+                        </div>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "Gua udah pake berbagai EA, tapi ini paling oke! Market structure-nya akurat banget, profit konsisten. Supportnya juga cepat ngebantu."
                         </div>
                     </div>
-                    <div class="testimonial-rating">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <div class="testimonial-text">
-                        "Gua udah pake berbagai EA, tapi ini paling oke! Market structure-nya akurat banget, profit konsisten. Supportnya juga cepat ngebantu."
-                    </div>
-                </div>
-                <!-- Testimoni 2 (USA) -->
-                <div class="testimonial-card">
-                    <div class="testimonial-header">
-                        <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
-                        <div class="testimonial-name">
-                            <h4>John Smith</h4>
-                            <p>New York, USA</p>
+                    <!-- Testimoni 2 (USA) -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div class="testimonial-name">
+                                <h4>John Smith</h4>
+                                <p>New York, USA</p>
+                            </div>
+                        </div>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "I've been using Deepmaker for 3 months on my gold account. The AI really understands market structure. Great risk management!"
                         </div>
                     </div>
-                    <div class="testimonial-rating">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <div class="testimonial-text">
-                        "I've been using Deepmaker for 3 months on my gold account. The AI really understands market structure. Great risk management!"
-                    </div>
-                </div>
-                <!-- Testimoni 3 (Indonesia) -->
-                <div class="testimonial-card">
-                    <div class="testimonial-header">
-                        <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
-                        <div class="testimonial-name">
-                            <h4>Sari Wijaya</h4>
-                            <p>Bandung, Indonesia</p>
+                    <!-- Testimoni 3 (Indonesia) -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div class="testimonial-name">
+                                <h4>Sari Wijaya</h4>
+                                <p>Bandung, Indonesia</p>
+                            </div>
+                        </div>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "Remote control-nya memudahkan banget buat pantau trading dari mana aja. Apalagi pas lagi di luar kota. Recommended!"
                         </div>
                     </div>
-                    <div class="testimonial-rating">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <div class="testimonial-text">
-                        "Remote control-nya memudahkan banget buat pantau trading dari mana aja. Apalagi pas lagi di luar kota. Recommended!"
-                    </div>
-                </div>
-                <!-- Testimoni 4 (Spain) -->
-                <div class="testimonial-card">
-                    <div class="testimonial-header">
-                        <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
-                        <div class="testimonial-name">
-                            <h4>Maria Garcia</h4>
-                            <p>Madrid, Spain</p>
+                    <!-- Testimoni 4 (Spain) -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div class="testimonial-name">
+                                <h4>Maria Garcia</h4>
+                                <p>Madrid, Spain</p>
+                            </div>
+                        </div>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "El mejor EA que he probado para XAUUSD. La estructura de mercado es increíble y el soporte es muy atento."
                         </div>
                     </div>
-                    <div class="testimonial-rating">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <!-- Testimoni Vietnam 1 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div class="testimonial-name">
+                                <h4>Nguyen Van A</h4>
+                                <p>Ho Chi Minh, Vietnam</p>
+                            </div>
+                        </div>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "Tôi đã sử dụng Deepmaker V5.5 được 2 tháng, kết quả thật tuyệt vời! Tỷ lệ thắng cao và quản lý rủi ro rất tốt."
+                        </div>
                     </div>
-                    <div class="testimonial-text">
-                        "El mejor EA que he probado para XAUUSD. La estructura de mercado es increíble y el soporte es muy atento."
+                    <!-- Testimoni Vietnam 2 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div class="testimonial-name">
+                                <h4>Tran Thi B</h4>
+                                <p>Hanoi, Vietnam</p>
+                            </div>
+                        </div>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "Phân tích cấu trúc thị trường rất chính xác. Tôi kiếm được lợi nhuận ổn định mỗi ngày."
+                        </div>
+                    </div>
+                    <!-- Testimoni Vietnam 3 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div class="testimonial-name">
+                                <h4>Le Van C</h4>
+                                <p>Da Nang, Vietnam</p>
+                            </div>
+                        </div>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "EA này thực sự thông minh, tôi đã lấy lại vốn sau 1 tuần. Cảm ơn Deepmaker!"
+                        </div>
+                    </div>
+                    <!-- Testimoni Amerika 1 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div class="testimonial-name">
+                                <h4>Michael Johnson</h4>
+                                <p>New York, USA</p>
+                            </div>
+                        </div>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "I've been using Deepmaker for 3 months, and it's by far the best EA for Gold. The market structure analysis is spot on!"
+                        </div>
+                    </div>
+                    <!-- Testimoni Amerika 2 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div class="testimonial-name">
+                                <h4>Sarah Williams</h4>
+                                <p>Texas, USA</p>
+                            </div>
+                        </div>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "The AI really understands the market movements. My account has grown 40% in 2 months. Highly recommended!"
+                        </div>
+                    </div>
+                    <!-- Testimoni Amerika 3 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div class="testimonial-name">
+                                <h4>David Brown</h4>
+                                <p>California, USA</p>
+                            </div>
+                        </div>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "Excellent risk management and consistent profits. The support team is also very responsive."
+                        </div>
                     </div>
                 </div>
+                <button class="slider-prev" id="sliderPrev">❮</button>
+                <button class="slider-next" id="sliderNext">❯</button>
+            </div>
+
+            <!-- Form Ulasan Palsu -->
+            <div class="review-form-container">
+                <h3 class="review-form-title">Tulis Ulasan Anda</h3>
+                <div class="rating-input" id="ratingStars">
+                    <i class="far fa-star" data-value="1"></i>
+                    <i class="far fa-star" data-value="2"></i>
+                    <i class="far fa-star" data-value="3"></i>
+                    <i class="far fa-star" data-value="4"></i>
+                    <i class="far fa-star" data-value="5"></i>
+                </div>
+                <form id="fakeReviewForm">
+                    <div class="form-group">
+                        <input type="text" id="reviewerName" placeholder="Nama Anda" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="reviewerCountry" placeholder="Negara" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="reviewText" placeholder="Tulis ulasan Anda..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit" id="submitReviewBtn">
+                        <span>Kirim Ulasan</span>
+                        <div class="spinner"></div>
+                    </button>
+                    <div class="submit-message" id="submitMessage"></div>
+                </form>
             </div>
         </div>
     </section>
@@ -1059,6 +1394,9 @@
         </div>
     </footer>
 
+    <!-- Container Notifikasi -->
+    <div class="notification-container" id="notificationContainer"></div>
+
     <script>
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1075,7 +1413,6 @@
         const body = document.body;
         const icon = themeToggle.querySelector('i');
 
-        // Check local storage for theme preference
         if (localStorage.getItem('theme') === 'dark') {
             body.classList.add('dark-theme');
             icon.classList.remove('fa-moon');
@@ -1093,6 +1430,150 @@
                 icon.classList.add('fa-moon');
                 localStorage.setItem('theme', 'light');
             }
+        });
+
+        // Testimonials Slider
+        const slider = document.getElementById('testimonialsSlider');
+        const prevBtn = document.getElementById('sliderPrev');
+        const nextBtn = document.getElementById('sliderNext');
+
+        if (prevBtn && nextBtn && slider) {
+            const scrollAmount = 320; // lebar card + gap
+
+            prevBtn.addEventListener('click', () => {
+                slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            });
+
+            nextBtn.addEventListener('click', () => {
+                slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            });
+
+            // Auto play setiap 5 detik
+            let autoScroll = setInterval(() => {
+                if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth) {
+                    slider.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            }, 5000);
+
+            // Hentikan auto play saat hover
+            slider.addEventListener('mouseenter', () => clearInterval(autoScroll));
+            slider.addEventListener('mouseleave', () => {
+                autoScroll = setInterval(() => {
+                    if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth) {
+                        slider.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                    }
+                }, 5000);
+            });
+        }
+
+        // Rating bintang interaktif
+        const stars = document.querySelectorAll('#ratingStars i');
+        let currentRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const value = parseInt(this.dataset.value);
+                currentRating = value;
+                updateStars(value);
+            });
+        });
+
+        function updateStars(rating) {
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                }
+            });
+        }
+
+        // Fake form submission
+        const form = document.getElementById('fakeReviewForm');
+        const submitBtn = document.getElementById('submitReviewBtn');
+        const messageDiv = document.getElementById('submitMessage');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validasi sederhana
+            const name = document.getElementById('reviewerName').value.trim();
+            const country = document.getElementById('reviewerCountry').value.trim();
+            const review = document.getElementById('reviewText').value.trim();
+            
+            if (!name || !country || !review || currentRating === 0) {
+                messageDiv.style.color = '#ef4444';
+                messageDiv.textContent = 'Harap isi semua kolom dan beri bintang.';
+                return;
+            }
+
+            // Tampilkan loading
+            submitBtn.classList.add('loading');
+            messageDiv.style.color = '#10b981';
+            messageDiv.textContent = '';
+
+            // Simulasi pengiriman
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                messageDiv.textContent = 'Terima kasih! Ulasan Anda telah dikirim.';
+                form.reset();
+                currentRating = 0;
+                updateStars(0);
+            }, 2000);
+        });
+
+        // Notifikasi pembelian popup
+        const notifContainer = document.getElementById('notificationContainer');
+        const notifications = [
+            { name: 'Andi', city: 'Jakarta', package: 'Paket Pro' },
+            { name: 'Budi', city: 'Surabaya', package: 'Paket VIP' },
+            { name: 'Citra', city: 'Bandung', package: 'Paket Basic' },
+            { name: 'David', city: 'Medan', package: 'Paket Trial' },
+            { name: 'Eka', city: 'Makassar', package: 'Paket Pro' }
+        ];
+
+        let notifIndex = 0;
+
+        function showNextNotification() {
+            if (notifIndex >= notifications.length) return;
+
+            const notif = notifications[notifIndex];
+            const toast = document.createElement('div');
+            toast.className = 'notification-toast';
+            toast.innerHTML = `
+                <div class="notif-content">
+                    <strong>${notif.name} dari ${notif.city}</strong>
+                    <p>telah membeli ${notif.package}</p>
+                </div>
+                <button class="close-notif">&times;</button>
+            `;
+
+            // Tombol close
+            toast.querySelector('.close-notif').addEventListener('click', () => {
+                toast.remove();
+            });
+
+            notifContainer.appendChild(toast);
+
+            // Hapus otomatis setelah 5 detik
+            setTimeout(() => {
+                if (toast.parentNode) toast.remove();
+            }, 5000);
+
+            notifIndex++;
+        }
+
+        // Tampilkan notifikasi pertama segera setelah halaman dimuat
+        window.addEventListener('load', function() {
+            showNextNotification();
+            // Tampilkan notifikasi berikutnya setiap 3 detik
+            setInterval(showNextNotification, 3000);
         });
     </script>
 </body>
